@@ -5,6 +5,9 @@ const Productora = require('./Productora');
 const produccionSchema = new mongoose.Schema({
     nombre: {type: String, required: true},
     estado: { type: String, default: 'Activo' },
+    resumen: { type: String },
+    tipo: { type: String},
+    genero: { type: String },
     url_produccion: { type: String },
     imagen_portada: { type: String },
     fecha_creacion: { type: Date, default: Date.now },
