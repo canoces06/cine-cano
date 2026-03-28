@@ -179,14 +179,14 @@ const Media = () => {
                     {producciones.map(p => (
                         <div className="col-md-4 mb-4" key={p._id}>
                             <div className="card h-100 shadow-sm border-0 bg-light">
-                                
+
                                 <div className="card-body">
                                     <img
-                                    src={p.imagen_portada} 
-                                    alt={p.nombre}
-                                    className="card-img-top"
-                                    style={{ height: '300px', objectFit: 'cover' }}
-                                />
+                                        src={p.imagen_portada}
+                                        alt={p.nombre}
+                                        className="card-img-top"
+                                        style={{ height: '200px', objectFit: 'cover' }}
+                                    />
                                     <h5 className="card-title fw-bold text-primary">{p.nombre}</h5>
                                     <h6 className="card-subtitle mb-2">
                                         <span className="badge bg-secondary me-2">{p.tipo}</span>
@@ -197,7 +197,14 @@ const Media = () => {
                                     <ul className="list-unstyled small mb-3">
                                         <li><strong>🎬 Director:</strong> {p.Director?.nombre || 'Desconocido'}</li>
                                         <li><strong>🏢 Productora:</strong> {p.Productora?.nombre || 'Desconocida'}</li>
-                                        <li><strong>📹Trailer:</strong> {p.url_produccion || 'Desconocido'}</li>
+                                        {/* <li><strong>📹Trailer:</strong> {p.url_produccion || 'Desconocido'}</li> */}
+                                        <li>
+                                            <strong>📹 Trailer:</strong> {p.url_produccion ? (
+                                                <a href={p.url_produccion} target="_blank" rel="noopener noreferrer" className="ms-1">
+                                                    Ver Trailer
+                                                </a>
+                                            ) : 'No disponible'}
+                                        </li>
                                     </ul>
                                 </div>
                                 <div className="card-footer bg-transparent border-top-0 pt-0 text-end d-flex justify-content-end gap-2">
