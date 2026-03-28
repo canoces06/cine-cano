@@ -71,10 +71,10 @@ a.navbar-brand {
 .img-cover {
     width: 100%;
     height: 350px; 
-    object-fit: contain; 
-    background-color: #305c80;
-    padding: 10px;
-    display: block;
+    object-fit: cover; 
+    object-position: center; 
+    border-bottom: 1px solid #ddd; 
+    transition: transform 0.3s ease; 
 }
 
 .img-cover:hover {
