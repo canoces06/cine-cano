@@ -181,7 +181,7 @@ const Media = () => {
                             <div className="card h-100 shadow-sm border-0 bg-light">
                                 <div className="card-body">
                                     <img
-                                        src={p.imagen_portada || 'https://via.placeholder.com/300x450?text=Sin+Portada'}
+                                        src={p.imagen_portada || 'Sin imagen'}
                                         alt={p.nombre}
                                         className="card-img-top" 
                                         style={{ height: '300px', objectFit: 'cover' }} 
