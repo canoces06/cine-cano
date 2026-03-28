@@ -45,7 +45,7 @@ const Media = () => {
     const handleCreate = async (e) => {
         e.preventDefault();
         try {
-            const payload = { nombre, resumen, tipo, genero, directorId, productoraId, url_produccion };
+            const payload = { nombre, resumen, tipo, genero, directorId, productoraId, url_produccion, imagen_portada };
             if (editingId) {
                 await api.put(`/produccion/${editingId}`, payload);
                 setEditingId(null);
