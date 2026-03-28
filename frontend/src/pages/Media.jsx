@@ -45,7 +45,7 @@ const Media = () => {
     const handleCreate = async (e) => {
         e.preventDefault();
         try {
-            const payload = { nombre, resumen, tipo, genero, directorId, productoraId, url_produccion };
+            const payload = { nombre, resumen, tipo, genero, directorId, productoraId, url_produccion, imagen_portada };
             if (editingId) {
                 await api.put(`/produccion/${editingId}`, payload);
                 setEditingId(null);
@@ -77,6 +77,7 @@ const Media = () => {
         setNombre('');
         setResumen('');
         setUrl('');
+        setImagenPortada('');
         setTipo('Película');
         setGenero('Acción');
         if (directores.length > 0) setDirectorId(directores[0]._id);
@@ -179,6 +180,12 @@ const Media = () => {
                         <div className="col-md-4 mb-4" key={p._id}>
                             <div className="card h-100 shadow-sm border-0 bg-light">
                                 <div className="card-body">
+                                    <img
+                                        src={p.imagen_portada || 'https://via.placeholder.com/300x450?text=Sin+Portada'}
+                                        alt={p.nombre}
+                                        className="card-img-top" 
+                                        style={{ height: '300px', objectFit: 'cover' }} 
+                                    />
                                     <h5 className="card-title fw-bold text-primary">{p.nombre}</h5>
                                     <h6 className="card-subtitle mb-2">
                                         <span className="badge bg-secondary me-2">{p.tipo}</span>
@@ -189,8 +196,8 @@ const Media = () => {
                                     <ul className="list-unstyled small mb-3">
                                         <li><strong>🎬 Director:</strong> {p.Director?.nombre || 'Desconocido'}</li>
                                         <li><strong>🏢 Productora:</strong> {p.Productora?.nombre || 'Desconocida'}</li>
-                                        <li><strong>🖼️ Imagen de Portada:</strong> {p.imagen_portada || 'Sin imagen'}</li>
-                                            
+                                        {/*<li><strong>🖼️ Imagen de Portada:</strong> {p.imagen_portada || 'Sin imagen'}</li>*/}
+
                                     </ul>
                                 </div>
                                 <div className="card-footer bg-transparent border-top-0 pt-0 text-end d-flex justify-content-end gap-2">
