@@ -5,17 +5,17 @@ const Media = () => {
     const [producciones, setProducciones] = useState([]);
     const [directores, setDirectores] = useState([]);
     const [productoras, setProductoras] = useState([]);
-    
-    // Form state
+
     const [nombre, setNombre] = useState('');
     const [resumen, setResumen] = useState('');
-    const [tipo, setTipo] = useState('Película'); 
+    const [tipo, setTipo] = useState('Película');
     const [genero, setGenero] = useState('Acción');
     const [directorId, setDirectorId] = useState('');
     const [productoraId, setProductoraId] = useState('');
     const [url_produccion, setUrl] = useState('');
-    
+
     const [loading, setLoading] = useState(true);
+    const [editingId, setEditingId] = useState(null);
 
     useEffect(() => {
         fetchData();
@@ -32,9 +32,9 @@ const Media = () => {
             setProducciones(prodRes.data);
             setDirectores(dirRes.data);
             setProductoras(prodctRes.data);
-            
-            if (dirRes.data.length > 0) setDirectorId(dirRes.data[0]._id);
-            if (prodctRes.data.length > 0) setProductoraId(prodctRes.data[0]._id);
+
+            if (!editingId && dirRes.data.length > 0) setDirectorId(dirRes.data[0]._id);
+            if (!editingId && prodctRes.data.length > 0) setProductoraId(prodctRes.data[0]._id);
         } catch (error) {
             console.error("Error fetching data", error);
         }
@@ -44,19 +44,45 @@ const Media = () => {
     const handleCreate = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/produccion', { 
-                nombre, resumen, tipo, genero, directorId, productoraId, url_produccion 
-            });
+            const payload = { nombre, resumen, tipo, genero, directorId, productoraId, url_produccion };
+            if (editingId) {
+                await api.put(`/produccion/${editingId}`, payload);
+                setEditingId(null);
+            } else {
+                await api.post('/produccion', payload);
+            }
             setNombre(''); setResumen(''); setUrl('');
             fetchData();
         } catch (error) {
-            console.error("Error creando producción", error);
-            alert("Error al crear la producción.");
+            console.error("Error guardando producción", error);
+            alert("Error al guardar la producción.");
         }
     };
 
+    const handleEditClick = (p) => {
+        setEditingId(p._id);
+        setNombre(p.nombre);
+        setResumen(p.resumen || '');
+        setTipo(p.tipo || 'Película');
+        setGenero(p.genero || 'Acción');
+        setDirectorId(p.Director?._id || '');
+        setProductoraId(p.Productora?._id || '');
+        setUrl(p.url_produccion || '');
+    };
+
+    const handleCancelEdit = () => {
+        setEditingId(null);
+        setNombre('');
+        setResumen('');
+        setUrl('');
+        setTipo('Película');
+        setGenero('Acción');
+        if (directores.length > 0) setDirectorId(directores[0]._id);
+        if (productoras.length > 0) setProductoraId(productoras[0]._id);
+    };
+
     const handleDelete = async (id) => {
-        if(window.confirm("¿Seguro que deseas eliminar esta producción?")) {
+        if (window.confirm("¿Seguro que deseas eliminar esta producción?")) {
             try {
                 await api.delete(`/produccion/${id}`);
                 fetchData();
@@ -69,10 +95,10 @@ const Media = () => {
     return (
         <div className="container mt-4">
             <h2 className="mb-4">🎬 Gestión de Películas y Series</h2>
-            
+
             <div className="card shadow-sm mb-4">
                 <div className="card-header bg-dark text-white">
-                    <h5 className="mb-0">Añadir Nueva Producción</h5>
+                    <h5 className="mb-0">{editingId ? 'Editar Producción' : 'Añadir Nueva Producción'}</h5>
                 </div>
                 <div className="card-body">
                     <form onSubmit={handleCreate}>
@@ -97,11 +123,11 @@ const Media = () => {
                                     <option value="Drama">Drama</option>
                                     <option value="Terror">Terror</option>
                                     <option value="Ciencia Ficción">Ciencia Ficción</option>
-                                    <option value="Suspenso">Suspenso</option>
                                     <option value="Animación">Animación</option>
+                                    <option value="Suspenso">Suspenso</option>
                                 </select>
                             </div>
-                            
+
                             <div className="col-md-6">
                                 <label className="form-label">Director</label>
                                 <select className="form-select" value={directorId} onChange={(e) => setDirectorId(e.target.value)} required>
@@ -119,14 +145,19 @@ const Media = () => {
                                 <label className="form-label">Resumen</label>
                                 <textarea className="form-control" value={resumen} onChange={(e) => setResumen(e.target.value)} rows="2"></textarea>
                             </div>
-                            
+
                             <div className="col-md-12">
                                 <label className="form-label">URL (Trailer o poster)</label>
                                 <input type="url" className="form-control" value={url_produccion} onChange={(e) => setUrl(e.target.value)} placeholder="https://..." />
                             </div>
 
-                            <div className="col-12 mt-3 text-end">
-                                <button type="submit" className="btn btn-guardar px-4">Guardar Producción</button>
+                            <div className="col-12 mt-3 text-end d-flex justify-content-end gap-2">
+                                {editingId && (
+                                    <button type="button" className="btn btn-secondary px-4" onClick={handleCancelEdit}>Cancelar</button>
+                                )}
+                                <button type="submit" className={`btn ${editingId ? 'btn-warning' : 'btn-guardar'} px-4`}>
+                                    {editingId ? 'Actualizar Producción' : 'Guardar Producción'}
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -153,7 +184,8 @@ const Media = () => {
                                         <li><strong>🏢 Productora:</strong> {p.Productora?.nombre || 'Desconocida'}</li>
                                     </ul>
                                 </div>
-                                <div className="card-footer bg-transparent border-top-0 pt-0 text-end">
+                                <div className="card-footer bg-transparent border-top-0 pt-0 text-end d-flex justify-content-end gap-2">
+                                    <button className="btn btn-sm btn-outline-primary" onClick={() => handleEditClick(p)}>Editar</button>
                                     <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(p._id)}>Eliminar</button>
                                 </div>
                             </div>
@@ -165,5 +197,4 @@ const Media = () => {
         </div>
     );
 };
-
 export default Media;

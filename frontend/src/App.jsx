@@ -8,10 +8,10 @@ import Genero from './pages/Genero';
 import Tipo from './pages/Tipo';
 
 const Home = () => (
-    <div className="container mt-5 text-center">
-        <h1 className="display-4 fw-bold">🎬 Bienvenido a CineCano</h1>
-        <p className="lead mt-3">Selecciona un módulo en el menú superior para comenzar a administrar el catálogo de películas y series.</p>
-    </div>
+  <div className="container mt-5 text-center">
+    <h1 className="display-4 fw-bold">🎬 Bienvenido a CineCano</h1>
+    <p className="lead mt-3">Selecciona un módulo en el menú superior para comenzar a administrar el catálogo de películas y series.</p>
+  </div>
 );
 
 function App() {

@@ -8,6 +8,7 @@ const Productora = () => {
     const [descripcion, setDescripcion] = useState('');
     const [estado, setEstado] = useState('Activo');
     const [loading, setLoading] = useState(true);
+    const [editingId, setEditingId] = useState(null);
 
     useEffect(() => {
         fetchProductoras();
@@ -27,16 +28,38 @@ const Productora = () => {
     const handleCreate = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/productoras', { nombre, slogan, descripcion, estado });
+            const payload = { nombre, slogan, descripcion, estado };
+            if (editingId) {
+                await api.put(`/productoras/${editingId}`, payload);
+                setEditingId(null);
+            } else {
+                await api.post('/productoras', payload);
+            }
             setNombre('');
             setSlogan('');
             setDescripcion('');
             setEstado('Activo');
             fetchProductoras();
         } catch (error) {
-            console.error("Error creating productora", error);
-            alert("Hubo un error al crear la productora.");
+            console.error("Error saving productora", error);
+            alert("Hubo un error al guardar la productora.");
         }
+    };
+
+    const handleEditClick = (p) => {
+        setEditingId(p._id);
+        setNombre(p.nombre);
+        setSlogan(p.slogan);
+        setDescripcion(p.descripcion);
+        setEstado(p.estado);
+    };
+
+    const handleCancelEdit = () => {
+        setEditingId(null);
+        setNombre('');
+        setSlogan('');
+        setDescripcion('');
+        setEstado('Activo');
     };
 
     return (
@@ -45,7 +68,7 @@ const Productora = () => {
             
             <div className="card shadow-sm mb-4">
                 <div className="card-header bg-dark text-white">
-                    <h5 className="mb-0">Añadir Nueva Productora</h5>
+                    <h5 className="mb-0">{editingId ? 'Editar Productora' : 'Añadir Nueva Productora'}</h5>
                 </div>
                 <div className="card-body">
                     <form onSubmit={handleCreate}>
@@ -69,8 +92,13 @@ const Productora = () => {
                                     <option value="Inactivo">Inactivo</option>
                                 </select>
                             </div>
-                            <div className="col-12 mt-3 text-end">
-                                <button type="submit" className="btn btn-guardar px-4">Guardar Productora</button>
+                            <div className="col-12 mt-3 text-end d-flex justify-content-end gap-2">
+                                {editingId && (
+                                    <button type="button" className="btn btn-secondary px-4" onClick={handleCancelEdit}>Cancelar</button>
+                                )}
+                                <button type="submit" className={`btn ${editingId ? 'btn-warning' : 'btn-guardar'} px-4`}>
+                                    {editingId ? 'Actualizar Productora' : 'Guardar Productora'}
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -92,6 +120,7 @@ const Productora = () => {
                                 <th>Slogan</th>
                                 <th>Descripción</th>
                                 <th>Estado</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -104,11 +133,14 @@ const Productora = () => {
                                         <td>
                                             <span className={`badge ${p.estado === 'Activo' ? 'bg-success' : 'bg-secondary'}`}>{p.estado}</span>
                                         </td>
+                                        <td>
+                                            <button className="btn btn-sm btn-outline-primary" onClick={() => handleEditClick(p)}>Editar</button>
+                                        </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="4" className="text-center text-muted">No hay productoras registradas.</td>
+                                    <td colSpan="5" className="text-center text-muted">No hay productoras registradas.</td>
                                 </tr>
                             )}
                         </tbody>
@@ -118,5 +150,4 @@ const Productora = () => {
         </div>
     );
 };
-
 export default Productora;

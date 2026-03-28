@@ -6,6 +6,7 @@ const Director = () => {
     const [nombre, setNombre] = useState('');
     const [estado, setEstado] = useState('Activo');
     const [loading, setLoading] = useState(true);
+    const [editingId, setEditingId] = useState(null);
 
     useEffect(() => {
         fetchDirectores();
@@ -25,14 +26,31 @@ const Director = () => {
     const handleCreate = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/directores', { nombre, estado });
+            if (editingId) {
+                await api.put(`/directores/${editingId}`, { nombre, estado });
+                setEditingId(null);
+            } else {
+                await api.post('/directores', { nombre, estado });
+            }
             setNombre('');
             setEstado('Activo');
             fetchDirectores();
         } catch (error) {
-            console.error("Error creating director", error);
-            alert("Hubo un error al crear el director.");
+            console.error("Error guardando director", error);
+            alert("Hubo un error al guardar el director.");
         }
+    };
+
+    const handleEditClick = (d) => {
+        setEditingId(d._id);
+        setNombre(d.nombre);
+        setEstado(d.estado);
+    };
+
+    const handleCancelEdit = () => {
+        setEditingId(null);
+        setNombre('');
+        setEstado('Activo');
     };
 
     return (
@@ -41,7 +59,7 @@ const Director = () => {
             
             <div className="card shadow-sm mb-4">
                 <div className="card-header bg-dark text-white">
-                    <h5 className="mb-0">Añadir Nuevo Director</h5>
+                    <h5 className="mb-0">{editingId ? 'Editar Director' : 'Añadir Nuevo Director'}</h5>
                 </div>
                 <div className="card-body">
                     <form onSubmit={handleCreate}>
@@ -57,8 +75,13 @@ const Director = () => {
                                     <option value="Inactivo">Inactivo</option>
                                 </select>
                             </div>
-                            <div className="col-md-2 d-flex align-items-end">
-                                <button type="submit" className="btn btn-guardar w-100">Guardar</button>
+                            <div className="col-md-2 d-flex flex-column gap-2 justify-content-end">
+                                <button type="submit" className={`btn ${editingId ? 'btn-warning' : 'btn-guardar'}`}>
+                                    {editingId ? 'Actualizar' : 'Guardar'}
+                                </button>
+                                {editingId && (
+                                    <button type="button" className="btn btn-secondary" onClick={handleCancelEdit}>Cancelar</button>
+                                )}
                             </div>
                         </div>
                     </form>
@@ -79,6 +102,7 @@ const Director = () => {
                                 <th>Nombre</th>
                                 <th>Estado</th>
                                 <th>Fecha Creación</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -90,11 +114,14 @@ const Director = () => {
                                             <span className={`badge ${d.estado === 'Activo' ? 'bg-success' : 'bg-secondary'}`}>{d.estado}</span>
                                         </td>
                                         <td>{new Date(d.fecha_creacion).toLocaleDateString()}</td>
+                                        <td>
+                                            <button className="btn btn-sm btn-outline-primary" onClick={() => handleEditClick(d)}>Editar</button>
+                                        </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="3" className="text-center text-muted">No hay directores registrados.</td>
+                                    <td colSpan="4" className="text-center text-muted">No hay directores registrados.</td>
                                 </tr>
                             )}
                         </tbody>
@@ -104,5 +131,4 @@ const Director = () => {
         </div>
     );
 };
-
 export default Director;

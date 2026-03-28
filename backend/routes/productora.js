@@ -12,7 +12,6 @@ router.post('/', async (req, res) => {
             slogan,
             fecha_creacion,
             fecha_modificacion
-           
         });
         const productoraGuardada = await nuevaProductora.save();
         res.status(201).json(productoraGuardada);
@@ -29,6 +28,22 @@ router.get('/', async (req, res) => {
     } catch (error) {
         console.error("Error al obtener las productoras:", error);
         res.status(500).json({ message: "Error al obtener las productoras" });
+    }
+});
+
+router.put('/:id', async (req, res) => {
+    try {
+        const { nombre, estado, descripcion, slogan } = req.body;
+        const productoraActualizada = await Productora.findByIdAndUpdate(
+            req.params.id,
+            { nombre, estado, descripcion, slogan, fecha_modificacion: Date.now() },
+            { new: true }
+        );
+        if(!productoraActualizada) return res.status(404).json({ message: "Productora no encontrada" });
+        res.json(productoraActualizada);
+    } catch (error) {
+        console.error("Error al actualizar la productora:", error);
+        res.status(500).json({ message: "Error al actualizar la productora" });
     }
 });
 

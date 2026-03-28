@@ -26,4 +26,20 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.put('/:id', async (req, res) => {
+    try {
+        const { nombre, estado } = req.body;
+        const directorActualizado = await Director.findByIdAndUpdate(
+            req.params.id,
+            { nombre, estado, fecha_modificacion: Date.now() },
+            { new: true }
+        );
+        if(!directorActualizado) return res.status(404).json({ message: "Director no encontrado" });
+        res.json(directorActualizado);
+    } catch (error) {
+        console.error("Error al actualizar el director:", error);
+        res.status(500).json({ message: "Error al actualizar el director" });
+    }
+});
+
 module.exports = router;
