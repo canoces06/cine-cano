@@ -182,7 +182,7 @@ const Media = () => {
                                     <ul className="list-unstyled small mb-3">
                                         <li><strong>🎬 Director:</strong> {p.Director?.nombre || 'Desconocido'}</li>
                                         <li><strong>🏢 Productora:</strong> {p.Productora?.nombre || 'Desconocida'}</li>
-                                        <li><strong>🏢 Trailer:</strong> {p.url_produccion?.url || 'Desconocido'}</li>
+                                        <li><strong>🏢 Trailer:</strong> {p.url_produccion?.url_produccion || 'Desconocido'}</li>
                                     </ul>
                                 </div>
                                 <div className="card-footer bg-transparent border-top-0 pt-0 text-end d-flex justify-content-end gap-2">
