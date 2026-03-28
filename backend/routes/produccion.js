@@ -15,6 +15,7 @@ router.post('/', async (req, res) => {
             Director: directorId,
             Productora: productoraId,
             url_produccion,
+            imagen_portada
             
         });
     const produccionGuardada = await nuevaProduccion.save();
@@ -51,7 +52,8 @@ router.put('/:produccionId', async (req, res) => {
                 url_produccion,
                 fecha_modificacion: Date.now(),
                 Director: directorId,
-                Productora: productoraId
+                Productora: productoraId,
+                imagen_portada
             },
             { new: true }
         );

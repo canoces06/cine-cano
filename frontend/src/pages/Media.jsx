@@ -13,6 +13,7 @@ const Media = () => {
     const [directorId, setDirectorId] = useState('');
     const [productoraId, setProductoraId] = useState('');
     const [url_produccion, setUrl] = useState('');
+    const [imagen_portada, setImagenPortada] = useState('');
 
     const [loading, setLoading] = useState(true);
     const [editingId, setEditingId] = useState(null);
@@ -68,6 +69,7 @@ const Media = () => {
         setDirectorId(p.Director?._id || '');
         setProductoraId(p.Productora?._id || '');
         setUrl(p.url_produccion || '');
+        setImagenPortada(p.imagen_portada || '');
     };
 
     const handleCancelEdit = () => {
@@ -151,6 +153,11 @@ const Media = () => {
                                 <input type="url" className="form-control" value={url_produccion} onChange={(e) => setUrl(e.target.value)} placeholder="https://..." />
                             </div>
 
+                            <div className="col-md-12">
+                                <label className="form-label">IMG (Imagen de portada)</label>
+                                <input type="url" className="form-control" value={imagen_portada} onChange={(e) => setImagenPortada(e.target.value)} placeholder="https://..." />
+                            </div>
+
                             <div className="col-12 mt-3 text-end d-flex justify-content-end gap-2">
                                 {editingId && (
                                     <button type="button" className="btn btn-secondary px-4" onClick={handleCancelEdit}>Cancelar</button>
@@ -182,7 +189,8 @@ const Media = () => {
                                     <ul className="list-unstyled small mb-3">
                                         <li><strong>🎬 Director:</strong> {p.Director?.nombre || 'Desconocido'}</li>
                                         <li><strong>🏢 Productora:</strong> {p.Productora?.nombre || 'Desconocida'}</li>
-                                        <li><strong>📹Trailer:</strong> {p.url_produccion || 'Desconocido'}</li>
+                                        <li><strong>🖼️ Imagen de Portada:</strong> {p.imagen_portada || 'Sin imagen'}</li>
+                                            
                                     </ul>
                                 </div>
                                 <div className="card-footer bg-transparent border-top-0 pt-0 text-end d-flex justify-content-end gap-2">
