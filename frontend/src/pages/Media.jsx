@@ -52,7 +52,7 @@ const Media = () => {
             } else {
                 await api.post('/produccion', payload);
             }
-            setNombre(''); setResumen(''); setUrl('');
+            setNombre(''); setResumen(''); setUrl(''); setImagenPortada('');
             fetchData();
         } catch (error) {
             console.error("Error guardando producción", error);
@@ -179,13 +179,14 @@ const Media = () => {
                     {producciones.map(p => (
                         <div className="col-md-4 mb-4" key={p._id}>
                             <div className="card h-100 shadow-sm border-0 bg-light">
-                                <img
+                                
+                                <div className="card-body">
+                                    <img
                                     src={p.imagen_portada} 
                                     alt={p.nombre}
                                     className="card-img-top"
                                     style={{ height: '300px', objectFit: 'cover' }}
                                 />
-                                <div className="card-body">
                                     <h5 className="card-title fw-bold text-primary">{p.nombre}</h5>
                                     <h6 className="card-subtitle mb-2">
                                         <span className="badge bg-secondary me-2">{p.tipo}</span>

@@ -5,7 +5,7 @@ const Productora = require('../models/Productora');
 
 router.post('/', async (req, res) => {
     try {
-        const { nombre, resumen, tipo, genero, directorId, productoraId, url_produccion} = req.body;
+        const { nombre, resumen, tipo, genero, directorId, productoraId, url_produccion, imagen_portada } = req.body;
 
         const nuevaProduccion = new Produccion({
             nombre,
@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
 
 router.put('/:produccionId', async (req, res) => {
     try {
-        const { nombre, resumen, tipo, genero, directorId, productoraId, url_produccion } = req.body;
+        const { nombre, resumen, tipo, genero, directorId, productoraId, url_produccion, imagen_portada } = req.body;
 
         const produccionActualizada = await Produccion.findByIdAndUpdate(
             req.params.produccionId,
