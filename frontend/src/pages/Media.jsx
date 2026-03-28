@@ -184,8 +184,8 @@ const Media = () => {
                                     <img
                                         src={p.imagen_portada}
                                         alt={p.nombre}
-                                        className="card-img-top"
-                                        style={{ height: '200px', objectFit: 'cover' }}
+                                        className="card-img-top img-cover"
+                                        style={{ height: '300px', objectFit: 'cover' }}
                                     />
                                     <h5 className="card-title fw-bold text-primary">{p.nombre}</h5>
                                     <h6 className="card-subtitle mb-2">
